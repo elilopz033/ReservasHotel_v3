@@ -1,131 +1,176 @@
 package org.iesalandalus.programacion.reservashotel.Dominio;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Reserva {
-    private static final int MAX_NUMERO_MESES_RESERVA = 6;
+
+    public static final int MAX_NUMERO_MESES_RESERVA = 3;
     private static final int MAX_HORAS_POSTERIOR_CHECKOUT = 12;
     public static final String FORMATO_FECHA_RESERVA = "dd/MM/yyyy";
     public static final String FORMATO_FECHA_HORA_RESERVA = "dd/MM/yyyy HH:mm";
 
-    private LocalDate fechaInicioReserva;
-    private LocalDate fechaFinReserva;
-    private int numeroPersonas;
     private Huesped huesped;
     private Habitacion habitacion;
     private Regimen regimen;
-    private LocalDate checkin;
-    private LocalDate checkout;
+    private LocalDate fechaInicioReserva;
+    private LocalDate fechaFinReserva;
+    private LocalDateTime checkIn;
+    private LocalDateTime checkOut;
     private double precio;
+    private int numeroPersonas;
 
-    // Constructor con parámetros
-    public Reserva(LocalDate fechaInicioReserva, LocalDate fechaFinReserva, int numeroPersonas, Huesped huesped,
-                   Habitacion habitacion, Regimen regimen, LocalDate checkin, LocalDate checkout) {
-        setFechaInicioReserva(fechaInicioReserva);
-        setFechaFinReserva(fechaFinReserva);
-        setNumeroPersonas(numeroPersonas);
+    public Reserva( Huesped huesped, Habitacion habitacion, Regimen regimen,
+                    LocalDate fechaInicioReserva, LocalDate fechaFinReserva,
+                    int numeroPersonas){
         setHuesped(huesped);
         setHabitacion(habitacion);
         setRegimen(regimen);
-        setCheckin(checkin);
-        setCheckout(checkout);
-        calcularPrecio();
-    }
-    // Constructor copia
-    public Reserva(Reserva otraReserva) {
-        this(otraReserva.fechaInicioReserva, otraReserva.fechaFinReserva, otraReserva.numeroPersonas,
-                new Huesped(otraReserva.huesped), new Habitacion(otraReserva.habitacion),
-                otraReserva.regimen, otraReserva.checkin, otraReserva.checkout);
-        this.precio = otraReserva.precio;
-    }
-    // Métodos de modificación
-    public void setFechaInicioReserva(LocalDate fechaInicioReserva) {
-        if (fechaInicioReserva.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de inicio no puede ser anterior al día actual");
-        }
-        this.fechaInicioReserva = fechaInicioReserva;
-    }
-    public void setFechaFinReserva(LocalDate fechaFinReserva) {
-        if (fechaFinReserva.isBefore(fechaInicioReserva)) {
-            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
-        }
-        if (fechaFinReserva.isAfter(fechaInicioReserva.plusMonths(MAX_NUMERO_MESES_RESERVA))) {
-            throw new IllegalArgumentException("La reserva no puede superar los " + MAX_NUMERO_MESES_RESERVA + " meses");
-        }
-        this.fechaFinReserva = fechaFinReserva;
-    }
-    public void setNumeroPersonas(int numeroPersonas) {
-        if (numeroPersonas > habitacion.getTipoHabitacion().capacidadMaxima()) {
-            throw new IllegalArgumentException("Número de personas no válido para el tipo de habitación");
-        }
-        this.numeroPersonas = numeroPersonas;
-    }
-    public void setHuesped(Huesped huesped) {
-        if (huesped == null) {
-            throw new IllegalArgumentException("Huesped no válido");
-        }
-        this.huesped = huesped;
+        setFechaInicioReserva(fechaInicioReserva);
+        setFechaFinReserva(fechaFinReserva);
+        setNumeroPersonas(numeroPersonas);
+        setPrecio();
+
     }
 
-    public void setHabitacion(Habitacion habitacion) {
-        if (habitacion == null) {
-            throw new IllegalArgumentException("Habitación no válida");
-        }
-        this.habitacion = habitacion;
+    public Reserva(Reserva reserva){
+        setHuesped(reserva.huesped);
+        setHabitacion(reserva.habitacion);
+        setRegimen(reserva.regimen);
+        setFechaInicioReserva(reserva.fechaInicioReserva);
+        setFechaFinReserva(reserva.fechaFinReserva);
+        setNumeroPersonas(reserva.numeroPersonas);
+        setPrecio();
+
     }
 
-    public void setRegimen(Regimen regimen) {
-        if (regimen == null) {
-            throw new IllegalArgumentException("Régimen no válido");
-        }
-        this.regimen = regimen;
-    }
-    public void setCheckin(LocalDate checkin) {
-        if (checkin.isBefore(fechaInicioReserva)) {
-            throw new IllegalArgumentException("Checkin no puede ser anterior a la fecha de inicio");
-        }
-        this.checkin = checkin;
+    public Huesped getHuesped() {
+        return huesped;
     }
 
-    public void setCheckout(LocalDate checkout) {
-        if (checkout.isBefore(checkin)) {
-            throw new IllegalArgumentException("Checkout no puede ser anterior al checkin");
-        }
-        if (checkout.isAfter(checkin.plusHours(MAX_HORAS_POSTERIOR_CHECKOUT))) {
-            throw new IllegalArgumentException("Checkout debe ser como máximo " + MAX_HORAS_POSTERIOR_CHECKOUT + " horas después del checkin");
-        }
-        this.checkout = checkout;
+    public Habitacion getHabitacion() {
+        return habitacion;
     }
 
-    private void calcularPrecio() {
-        double precioBase = habitacion.getPrecio();
-        double incrementoPorPersona = regimen.getIncrementoPorPersona() * numeroPersonas;
-        this.precio = precioBase + incrementoPorPersona;
+    public Regimen getRegimen() {
+        return regimen;
     }
 
-    // Otros métodos solicitados
-    public LocalDate getFechaInicio() {
+    public LocalDate getFechaInicioReserva() {
         return fechaInicioReserva;
     }
 
-    public LocalDate getFechaFin() {
+    public LocalDate getFechaFinReserva() {
         return fechaFinReserva;
+    }
+
+    public LocalDateTime getCheckIn() {
+        return checkIn;
+    }
+
+    public LocalDateTime getCheckOut() {
+        return checkOut;
     }
 
     public double getPrecio() {
         return precio;
     }
 
+    public int getNumeroPersonas() {
+        return numeroPersonas;
+    }
+
+    public void setHuesped(Huesped huesped) {
+        this.huesped = huesped;
+    }
+
+    public void setHabitacion(Habitacion habitacion) {
+        this.habitacion = habitacion;
+    }
+
+    public void setRegimen(Regimen regimen) {
+        this.regimen = regimen;
+    }
+
+    public void setFechaInicioReserva(LocalDate fechaInicioReserva) {
+        LocalDate hoy = LocalDate.now();
+        LocalDate maxFechaInicioReserva = hoy.plusMonths(MAX_NUMERO_MESES_RESERVA);
+
+        if (fechaInicioReserva.isBefore(hoy)) {
+            throw new IllegalArgumentException("La fecha de inicio de la reserva no puede ser anterior al d?a actual.");
+        } else if (fechaInicioReserva.isAfter(maxFechaInicioReserva)) {
+            throw new IllegalArgumentException("La fecha de inicio de la reserva no puede ser posterior a " + MAX_NUMERO_MESES_RESERVA + " meses a partir de ahora.");
+        } else {
+            this.fechaInicioReserva = fechaInicioReserva;
+        }
+    }
+
+    public void setFechaFinReserva(LocalDate fechaFinReserva) {
+        if(fechaFinReserva.isBefore(fechaInicioReserva)){
+            throw new IllegalArgumentException(("La fecha de fin de reserva no puede ser anterior a la fecha de reserva."));
+        }
+        this.fechaFinReserva = fechaFinReserva;
+    }
+
+    public void setCheckIn(LocalDateTime checkIn) {
+        if(checkIn.isBefore(fechaInicioReserva.atStartOfDay())){
+            throw new IllegalArgumentException("El check-in no puede ser anterior al inicio de la reserva.");
+        }
+        this.checkIn = checkIn;
+    }
+
+    public void setCheckOut(LocalDateTime checkOut) {
+        if (checkOut.isBefore(checkIn)) {
+            throw new IllegalArgumentException("El check-out no puede ser anterior al check-in.");
+        }
+        if (checkOut.isAfter(fechaFinReserva.atTime(MAX_HORAS_POSTERIOR_CHECKOUT, 0))) {
+            throw new IllegalArgumentException("El check-out debe hacerse como m?ximo a las " + MAX_HORAS_POSTERIOR_CHECKOUT + ":00 horas del d?a en que finaliza la reserva.");
+        }
+        this.checkOut = checkOut;
+    }
+
+    private void setPrecio() {
+        if (habitacion == null || regimen == null || fechaInicioReserva == null || fechaFinReserva == null) {
+            throw new IllegalArgumentException("Los datos de la reserva no est?n completos.");
+        }
+
+        double precioHabitacion = habitacion.getPrecio();
+        double incrementoPrecio = regimen.getIncrementoPorPersona();
+        long numeroNoches = ChronoUnit.DAYS.between(fechaInicioReserva, fechaFinReserva);
+
+        if (numeroNoches < 0) {
+            throw new IllegalArgumentException("La fecha de inicio de la reserva debe ser anterior a la fecha de fin.");
+        }
+
+        if (numeroPersonas <= 0) {
+            throw new IllegalArgumentException("El n?mero de personas debe ser mayor que cero.");
+        }
+        if(incrementoPrecio!= 0) {
+            this.precio = ((incrementoPrecio * numeroPersonas) + precioHabitacion) * numeroNoches;
+        } else {
+            this.precio = (numeroPersonas + precioHabitacion) * numeroNoches;
+        }
+    }
+
+
+    public void setNumeroPersonas(int numeroPersonas) {
+        if (numeroPersonas > habitacion.getTipoHabitacion().getNumeroMaximoPersonas()) {
+            throw new IllegalArgumentException("El n?mero de personas supera el n?mero m?ximo permitido para este tipo de habitaci?n.");
+        }
+        this.numeroPersonas = numeroPersonas;
+    }
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Reserva reserva = (Reserva) obj;
-        return habitacion.equals(reserva.habitacion) && fechaInicioReserva.equals(reserva.fechaInicioReserva);
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Reserva that = (Reserva) obj;
+        return Objects.equals(habitacion, that.habitacion) &&
+                Objects.equals(fechaInicioReserva, that.fechaInicioReserva);
     }
 
     @Override
@@ -136,16 +181,15 @@ public class Reserva {
     @Override
     public String toString() {
         return "Reserva{" +
-                "fechaInicio=" + fechaInicioReserva +
-                ", fechaFin=" + fechaFinReserva +
-                ", numeroPersonas=" + numeroPersonas +
-                ", huesped=" + huesped +
+                "huesped=" + huesped +
                 ", habitacion=" + habitacion +
                 ", regimen=" + regimen +
-                ", checkin=" + checkin +
-                ", checkout=" + checkout +
+                ", fechaInicioReserva=" + fechaInicioReserva +
+                ", fechaFinReserva=" + fechaFinReserva +
+                ", checkIn=" + checkIn +
+                ", checkOut=" + checkOut +
                 ", precio=" + precio +
+                ", numeroPersonas=" + numeroPersonas +
                 '}';
     }
-
 }

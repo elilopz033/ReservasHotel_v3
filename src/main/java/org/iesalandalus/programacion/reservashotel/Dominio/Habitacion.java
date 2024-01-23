@@ -1,5 +1,7 @@
 package org.iesalandalus.programacion.reservashotel.Dominio;
 
+import org.iesalandalus.programacion.reservashotel.Dominio.TipoHabitacion;
+
 import java.util.Objects;
 
 public class Habitacion {

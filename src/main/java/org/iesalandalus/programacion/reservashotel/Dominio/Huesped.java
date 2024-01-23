@@ -18,14 +18,14 @@ public class Huesped {
 
 //Expresiones para las validaciones
 
-    private static final String ER_NOMBRE = "^[A-Za-z?-??-?]+(\\s[A-Za-z?-??-?]+)*$";
+    private static final String ER_NOMBRE = "^[A-Za-zï¿½-ï¿½ï¿½-ï¿½]+(\\s[A-Za-zï¿½-ï¿½ï¿½-ï¿½]+)*$";
     private static final String ER_TELEFONO = "^[6789]\\d{8}$";
     private static final String ER_CORREO = "^([a-zA-Z0-9._%-]+)@([a-zA-Z0-9.-]+).([a-zA-Z]{2,6})$";
     private static final String ER_DNI = "(\\d{8})([A-Z])";
     public static final String FORMATO_FECHA = "dd/MM/yyyy";
 
 
-//Método formateaNombre
+//MÃ©todo formateaNombre
 
     public String formateaNombre (String nombre) {
         String[] palabras = nombre.split("\\s+");
@@ -41,7 +41,7 @@ public class Huesped {
         return nombreFormateado.toString().trim();
     }
 
-    //Método comprobarLetraDni
+    //MÃ©todo comprobarLetraDni
     private boolean comprobarLetraDni(String dni) {
         String ER_DNI = "^(\\\\d{8})([A-HJ-NP-TV-Za-hj-np-tv-z])$";
         Pattern pattern = Pattern.compile(ER_DNI);
@@ -69,14 +69,14 @@ public class Huesped {
         return iniciales.toString().toUpperCase();
     }
 
-    //Métodos de mofificación
+    //MÃ©todos de mofificaciÃ³n
     public String getNombre() {
         return nombre;
     }
 
     public void setNombre(String nombre) {
         if (!nombre.matches(ER_NOMBRE)) {
-            throw new IllegalArgumentException("Nombre no válido");
+            throw new IllegalArgumentException("Nombre no vÃ¡lido");
         }
         this.nombre = formateaNombre(nombre);
     }
@@ -89,7 +89,7 @@ public class Huesped {
     public void setDni(String dni) {
         // Validar el formato del DNI
         if (!dni.matches(ER_DNI) || (!comprobarLetraDni(dni))) {
-            throw new IllegalArgumentException("Formato de DNI no válido");
+            throw new IllegalArgumentException("Formato de DNI no vÃ¡lido");
         }
         this.dni = dni.toUpperCase();
     }
@@ -100,9 +100,9 @@ public class Huesped {
     }
 
     public void setTelefono(String telefono) {
-        // Validar el formato del teléfono
+        // Validar el formato del telÃ©fono
         if (!telefono.matches(ER_TELEFONO)) {
-            throw new IllegalArgumentException("Formato de teléfono no válido");
+            throw new IllegalArgumentException("Formato de telÃ©fono no vÃ¡lido");
         }
         this.telefono = telefono;
     }
@@ -115,7 +115,7 @@ public class Huesped {
     public void setCorreo(String correo) {
         // Validar el formato del correo
         if (!correo.matches(ER_CORREO)) {
-            throw new IllegalArgumentException("Formato de correo no válido");
+            throw new IllegalArgumentException("Formato de correo no vÃ¡lido");
         }
         this.correo = correo;
     }

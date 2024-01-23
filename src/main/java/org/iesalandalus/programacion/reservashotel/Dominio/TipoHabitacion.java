@@ -1,29 +1,29 @@
 package org.iesalandalus.programacion.reservashotel.Dominio;
-public enum TipoHabitacion {
-    INDIVIDUAL("Individual", 1),
-    DOBLE("Doble", 2),
-    MATRIMONIAL("Matrimonial", 2),
-    SUITE("Suite", 4);
 
-    private final String tipo;
-    private final int capacidadMaxima;
+
+public enum TipoHabitacion {
+    SUITE("Suite", 4),
+    SIMPLE("Habitaci?n simple", 1),
+    DOBLE("Habitaci?n doble", 2),
+    TRIPLE("Habitaci?n triple", 3);
+
+    private final String descripcion;
+    private final int numeroMaximoPersonas;
     private String cadenaAMostrar;
 
-    // Constructor
-    TipoHabitacion(String tipo, int capacidadMaxima) {
-        this.tipo = tipo;
-        this.capacidadMaxima = capacidadMaxima;
-        this.cadenaAMostrar = tipo + " - Máximo " + capacidadMaxima + " personas";
+    TipoHabitacion(String descripcion, int numeroMaximoPersonas) {
+        this.descripcion = descripcion;
+        this.numeroMaximoPersonas = numeroMaximoPersonas;
+        this.cadenaAMostrar = descripcion + " - M?ximo " + numeroMaximoPersonas + " personas";
     }
 
-    // Getter
-    public String getCadenaAMostrar() {
-        return cadenaAMostrar;
+    public int getNumeroMaximoPersonas() {
+        return numeroMaximoPersonas;
     }
 
-    // Método toString
-
+    @Override
     public String toString() {
         return cadenaAMostrar;
     }
 }
+

@@ -6,8 +6,8 @@ import java.util.Objects;
 public enum Regimen {
     SOLO_ALOJAMIENTO("Solo Alojamiento", 0),
     ALOJAMIENTO_Y_DESAYUNO("Alojamiento y Desayuno", 15),
-    MEDIA_PENSION("Media Pensión", 30),
-    PENSION_COMPLETA("Pensión Completa", 50);
+    MEDIA_PENSION("Media PensiÃ³n", 30),
+    PENSION_COMPLETA("PensiÃ³n Completa", 50);
 
     private final String tipo;
     private final double incrementoPorPersona;
